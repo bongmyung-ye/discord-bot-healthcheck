@@ -1,0 +1,32 @@
+{
+  "name": "discord-bot-healthcheck",
+  "version": "1.0.0",
+  "description": "A small Discord utility bot for checking runtime status and deployment health.",
+  "type": "module",
+  "main": "dist/index.js",
+  "scripts": {
+    "dev": "tsx src/index.ts",
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "lint": "tsc --noEmit"
+  },
+  "keywords": [
+    "discord",
+    "discord.js",
+    "typescript",
+    "healthcheck",
+    "bot",
+    "monitoring"
+  ],
+  "author": "bongmyung-ye",
+  "license": "MIT",
+  "dependencies": {
+    "discord.js": "^14.19.3",
+    "dotenv": "^16.4.7"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.7",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.3"
+  }
+}
