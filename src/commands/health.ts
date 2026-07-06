@@ -3,7 +3,7 @@ import {
   Client,
   EmbedBuilder,
   SlashCommandBuilder,
-  version as discordJsVersion,
+  version as discordVersion,
 } from "discord.js";
 import { formatBytes, formatUptime } from "../utils/format.js";
 
@@ -14,7 +14,7 @@ export const healthCommand = new SlashCommandBuilder()
 export async function handleHealthCommand(
   client: Client,
   interaction: ChatInputCommandInteraction,
-): Promise<void> {
+) {
   const memory = process.memoryUsage();
 
   const embed = new EmbedBuilder()
@@ -54,7 +54,7 @@ export async function handleHealthCommand(
       },
       {
         name: "discord.js",
-        value: discordJsVersion,
+        value: discordVersion,
         inline: true,
       },
     )

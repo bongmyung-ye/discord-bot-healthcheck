@@ -71,17 +71,18 @@ npm start
 
 ### `/health`
 
-현재 봇의 상태를 private embed로 보여줍니다.
+현재 봇 상태를 private embed로 보여줍니다.
 
-확인 가능한 정보:
+```txt
+Status       Online
+Ping         32ms
+Uptime       2h 14m 8s
+Memory       86.4 MB
+Guilds       1
+Node.js      v20.x
+discord.js   14.x
 
-- Status
-- Ping
-- Uptime
-- Memory
-- Guild count
-- Node.js version
-- discord.js version
+서버 이전이나 재시작 후 봇 상태를 빠르게 확인할 때 사용할 수 있습니다.
 
 ### `/about`
 
