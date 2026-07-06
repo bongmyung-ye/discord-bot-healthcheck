@@ -1,13 +1,9 @@
 import "dotenv/config";
-import {
-  Client,
-  GatewayIntentBits,
-  REST,
-  Routes,
-} from "discord.js";
-import { aboutCommand, handleAboutCommand } from "./commands/about.js";
-import { healthCommand, handleHealthCommand } from "./commands/health.js";
+import { Client, GatewayIntentBits } from "discord.js";
+import { runCommand } from "./commands/index.js";
+import { registerCommands } from "./services/commandRegistry.js";
 import { loadEnv } from "./utils/env.js";
+import { logger } from "./utils/logger.js";
 
 const env = loadEnv();
 
@@ -15,50 +11,35 @@ const client = new Client({
   intents: [GatewayIntentBits.Guilds],
 });
 
-const commands = [healthCommand.toJSON(), aboutCommand.toJSON()];
-
-async function registerGuildCommands(): Promise<void> {
-  const rest = new REST({ version: "10" }).setToken(env.token);
-
-  await rest.put(Routes.applicationGuildCommands(env.clientId, env.guildId), {
-    body: commands,
-  });
-
-  console.log("Slash commands registered.");
-}
-
 client.once("ready", () => {
-  console.log(`Logged in as ${client.user?.tag ?? "Unknown bot"}`);
+  logger.info(`Logged in as ${client.user?.tag ?? "Unknown bot"}`);
 });
 
 client.on("interactionCreate", async (interaction) => {
   if (!interaction.isChatInputCommand()) return;
 
   try {
-    if (interaction.commandName === "health") {
-      await handleHealthCommand(client, interaction);
-      return;
-    }
+    const handled = await runCommand(client, interaction);
 
-    if (interaction.commandName === "about") {
-      await handleAboutCommand(interaction);
-      return;
+    if (!handled) {
+      logger.warn(`Unhandled command: ${interaction.commandName}`);
     }
   } catch (error) {
-    console.error(error);
+    logger.error(`Command failed: ${interaction.commandName}`, error);
 
-    const message = {
+    const response = {
       content: "명령어를 처리하는 중 문제가 발생했습니다.",
       ephemeral: true,
     };
 
     if (interaction.replied || interaction.deferred) {
-      await interaction.followUp(message);
-    } else {
-      await interaction.reply(message);
+      await interaction.followUp(response);
+      return;
     }
+
+    await interaction.reply(response);
   }
 });
 
-await registerGuildCommands();
+await registerCommands(env);
 await client.login(env.token);

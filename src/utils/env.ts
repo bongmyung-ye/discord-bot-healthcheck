@@ -1,23 +1,23 @@
-type RequiredEnv = {
+export type AppEnv = {
   token: string;
   clientId: string;
   guildId: string;
 };
 
-function readRequiredEnv(name: string): string {
+function readEnv(name: string) {
   const value = process.env[name];
 
-  if (!value || value.trim().length === 0) {
-    throw new Error(`Missing required environment variable: ${name}`);
+  if (!value?.trim()) {
+    throw new Error(`Missing environment variable: ${name}`);
   }
 
   return value;
 }
 
-export function loadEnv(): RequiredEnv {
+export function loadEnv(): AppEnv {
   return {
-    token: readRequiredEnv("DISCORD_TOKEN"),
-    clientId: readRequiredEnv("CLIENT_ID"),
-    guildId: readRequiredEnv("GUILD_ID"),
+    token: readEnv("DISCORD_TOKEN"),
+    clientId: readEnv("CLIENT_ID"),
+    guildId: readEnv("GUILD_ID"),
   };
 }

@@ -1,20 +1,18 @@
-export function formatUptime(totalSeconds: number): string {
-  const days = Math.floor(totalSeconds / 86400);
-  const hours = Math.floor((totalSeconds % 86400) / 3600);
-  const minutes = Math.floor((totalSeconds % 3600) / 60);
-  const seconds = Math.floor(totalSeconds % 60);
+export function formatUptime(seconds: number) {
+  const days = Math.floor(seconds / 86400);
+  const hours = Math.floor((seconds % 86400) / 3600);
+  const minutes = Math.floor((seconds % 3600) / 60);
+  const secs = Math.floor(seconds % 60);
 
-  const parts = [
+  return [
     days > 0 ? `${days}d` : null,
     hours > 0 ? `${hours}h` : null,
     minutes > 0 ? `${minutes}m` : null,
-    `${seconds}s`,
-  ].filter((part): part is string => part !== null);
-
-  return parts.join(" ");
+    `${secs}s`,
+  ].filter(Boolean).join(" ");
 }
 
-export function formatBytes(bytes: number): string {
+export function formatBytes(bytes: number) {
   const units = ["B", "KB", "MB", "GB"];
   let value = bytes;
   let unitIndex = 0;
@@ -25,5 +23,7 @@ export function formatBytes(bytes: number): string {
   }
 
   const unit = units[unitIndex] ?? "B";
-  return `${value.toFixed(unitIndex === 0 ? 0 : 1)} ${unit}`;
+  const digits = unitIndex === 0 ? 0 : 1;
+
+  return `${value.toFixed(digits)} ${unit}`;
 }
