@@ -3,6 +3,7 @@ import { Client, GatewayIntentBits } from "discord.js";
 import { runCommand } from "./commands/index.js";
 import { registerCommands } from "./services/commandRegistry.js";
 import { loadEnv } from "./utils/env.js";
+import { sendCommandError } from "./utils/interaction.js";
 import { logger } from "./utils/logger.js";
 
 const env = loadEnv();
@@ -27,17 +28,11 @@ client.on("interactionCreate", async (interaction) => {
   } catch (error) {
     logger.error(`Command failed: ${interaction.commandName}`, error);
 
-    const response = {
-      content: "명령어를 처리하는 중 문제가 발생했습니다.",
-      ephemeral: true,
-    };
+    const sent = await sendCommandError(interaction);
 
-    if (interaction.replied || interaction.deferred) {
-      await interaction.followUp(response);
-      return;
+    if (!sent) {
+      logger.error(`Failed to send error response: ${interaction.commandName}`);
     }
-
-    await interaction.reply(response);
   }
 });
 
